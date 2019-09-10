@@ -1,0 +1,10 @@
+/* styles.css */
+@import "wijmo/styles/themes/wijmo.theme.material.css";
+
+body {
+  font-family: Lato, Arial, Helvetica;
+}
+.wj-flexgrid { /* limit the grid's width and height */
+  max-height: 300px;
+  max-width: 600px;
+}

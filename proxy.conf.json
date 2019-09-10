@@ -1,0 +1,7 @@
+{
+    "/fusiontester/": {
+        "target": "http://localhost:8093",
+        "secure": false,
+        "changeOrigin": true
+    }
+}

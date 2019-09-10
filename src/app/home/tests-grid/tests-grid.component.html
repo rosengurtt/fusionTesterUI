@@ -1,0 +1,44 @@
+
+<div style="overflow-x:auto;width: 1400px;padding:10px">
+        <button type="button" class="btn btn-primary pull-right" (click)="onClickNewTest()" >New Test</button>
+</div>
+<div style="overflow-x:auto;width: 1400px;padding:10px">
+    
+<table >
+    <tr>
+        <th *ngFor="let col of columns">
+            {{col}}
+        </th>
+    </tr>
+    <tr *ngFor="let test of tests$ | async">
+        <td *ngFor="let col of columns">
+            {{test[col] === '%' ? 'All' : test[col] }}
+        </td>
+        <td>
+            <a class="btn btn-primary pull-right"  [routerLink]="['/newTest', test['TestId']]">Edit</a>
+        </td>
+        <td>
+                <button type="button" class="btn btn-primary pull-right" (click)="startTest(test['TestId'])" >Start</button>
+        </td>
+    </tr>
+</table>
+</div>
+<div class="text-center" style="width: 1400px;padding:10px">
+<ul *ngIf="totalTests > pageSize" class="pagination">
+    <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
+        <a (click)="setPage(1)" class="page-link">First</a>
+    </li>
+    <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
+        <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
+    </li>
+    <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
+        <a (click)="setPage(page)" class="page-link">{{page}}</a>
+    </li>
+    <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
+        <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>
+    </li>
+    <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item last-item">
+        <a (click)="setPage(totalPages)" class="page-link">Last</a>
+    </li>
+  </ul>
+</div>
