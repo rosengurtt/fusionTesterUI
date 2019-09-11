@@ -1,44 +1,73 @@
-
 <div style="overflow-x:auto;width: 1400px;padding:10px">
-        <button type="button" class="btn btn-primary pull-right" (click)="onClickNewTest()" >New Test</button>
+    <button type="button" class="btn btn-primary pull-right" (click)="onClickEditTest('new')">New Test</button>
 </div>
 <div style="overflow-x:auto;width: 1400px;padding:10px">
-    
-<table >
-    <tr>
-        <th *ngFor="let col of columns">
-            {{col}}
-        </th>
-    </tr>
-    <tr *ngFor="let test of tests$ | async">
-        <td *ngFor="let col of columns">
-            {{test[col] === '%' ? 'All' : test[col] }}
-        </td>
-        <td>
-            <a class="btn btn-primary pull-right"  [routerLink]="['/newTest', test['TestId']]">Edit</a>
-        </td>
-        <td>
-                <button type="button" class="btn btn-primary pull-right" (click)="startTest(test['TestId'])" >Start</button>
-        </td>
-    </tr>
-</table>
+
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created by</th>
+            <th>Creation time</th>
+            <th>Airports</th>
+            <th>Airlines</th>
+            <th>Fusion Requests</th>
+            <th>Events from</th>
+            <th>Events to</th>
+            <th>Started</th>
+            <th>Finished</th>
+            <th>Records processed</th>
+            <th>Total records</th>
+            <th ></th>
+        </tr>
+        <tr *ngFor="let test of tests$ | async; let i = index">
+            <td *ngFor="let col of columns">
+                {{test[col] === '%' ? 'All' : test[col] }}
+            </td>
+            <td>
+                <div class="btn-group btn-group-justified" role="group" aria-label="Basic example">
+
+                    <!-- Edit button. Visible if job has never started-->
+                    <!--<a class="btn btn-primary pull-right" [routerLink]="['/newTest', test['TestId']]"
+                                *ngIf="test['StartDateTime'] == null">Edit</a>-->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary"
+                            (click)="onClickEditTest(test['TestId'])">Edit</button>
+                    </div>
+
+                    <!-- Start/Restart/Stop button. Visible if job hasn't finished and is not running. If job has started, shows 'Restart', otherwise 'Start'
+                            If job is running, it shows 'Stop'-->
+                    <div class="btn-group">
+                        <button type="button" *ngIf="!test['TestIsRunning'] && test['StartDateTime'] == null"
+                            class="btn btn-primary" (click)="startTest(test['TestId'], i)">Start</button>
+                        <button type="button"
+                            *ngIf="!test['TestIsRunning']  && test['StartDateTime'] != null && test['EndDateTime'] == null"
+                            class="btn btn-primary" (click)="startTest(test['TestId'], i)">Restart</button>
+                        <button type="button" *ngIf="test['TestIsRunning'] " class="btn btn-primary"
+                            (click)="stopTest(test['TestId'], i)">Stop</button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 <div class="text-center" style="width: 1400px;padding:10px">
-<ul *ngIf="totalTests > pageSize" class="pagination">
-    <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
-        <a (click)="setPage(1)" class="page-link">First</a>
-    </li>
-    <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
-        <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
-    </li>
-    <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
-        <a (click)="setPage(page)" class="page-link">{{page}}</a>
-    </li>
-    <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
-        <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>
-    </li>
-    <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item last-item">
-        <a (click)="setPage(totalPages)" class="page-link">Last</a>
-    </li>
-  </ul>
+    <ul *ngIf="totalTests > pageSize" class="pagination">
+        <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
+            <a (click)="setPage(1)" class="page-link">First</a>
+        </li>
+        <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
+            <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
+        </li>
+        <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
+            <a (click)="setPage(page)" class="page-link">{{page}}</a>
+        </li>
+        <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
+            <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>
+        </li>
+        <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item last-item">
+            <a (click)="setPage(totalPages)" class="page-link">Last</a>
+        </li>
+    </ul>
 </div>

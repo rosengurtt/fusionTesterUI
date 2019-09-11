@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Test } from '../test'
+import { Test, TestAction } from '../test'
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { TestsStatistics } from '../TestsStatistics';
@@ -16,6 +16,7 @@ export class DbService {
   private airportsUrl = this.baseUrl + '/airports'
   private airlinesUrl = this.baseUrl + '/airlines'
   private fusionRequestTypesUrl = this.baseUrl + '/fusion-request-types'
+  private testExecutionUrl = this.baseUrl + '/execution'
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -31,7 +32,7 @@ export class DbService {
     return this.http.get<Test[]>(this.testsUrl, { params });
   }
 
-  public getTest(TestId: number){
+  public getTest(TestId: number) {
     return this.http.get<Test[]>(this.testsUrl + "/" + TestId);
   }
 
@@ -55,12 +56,12 @@ export class DbService {
     return this.http.post(this.testsUrl, data)
   }
 
-  public putTest(TestId: number, data){
-    return this.http.put(this.testsUrl + '/' + TestId , data)
+  public putTest(TestId: number, data) {
+    return this.http.put(this.testsUrl + '/' + TestId, data)
   }
-  
-  public startTest(TestId: number, reset: boolean){
-    return this.http.post(this.testsUrl, data)
+
+  public startStopTest(TestId: number, testAction: TestAction) {
+    return this.http.post(this.testExecutionUrl + '/' + TestId, { "Action": testAction })
   }
 
 }

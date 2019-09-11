@@ -85,30 +85,41 @@ export class TestFormComponent implements OnInit {
       this.newTestForm.controls['FromDate'].setValue(data['FromDate'])
       this.newTestForm.controls['ToDate'].setValue(data['ToDate'])
 
+      let auxAirports: string[] = []
       for (let i = 1; i < this.airports.length; i++) {
         if (data['IncludeAirports'].includes(this.airports[i])) {
           this.selectedAirports[i] = true
           this.selectedAirports[0] = false
+          auxAirports.push(this.airports[i])
         }
         else
           this.selectedAirports[i] = false
       }
+      this.newTestForm.controls['IncludeAirports'].setValue(auxAirports)
+      
+      let auxAirlines: string[] = []
       for (let i = 1; i < this.airlines.length; i++) {
         if (data['IncludeAirlines'].includes(this.airlines[i])) {
           this.selectedAirlines[i] = true
           this.selectedAirlines[0] = false
+          auxAirlines.push(this.airlines[i])
         }
         else
           this.selectedAirlines[i] = false
-      }
+      }      
+      this.newTestForm.controls['IncludeAirlines'].setValue(auxAirlines)
+
+      let auxRequestTypes: string[] = []
       for (let i = 1; i < this.fusionRequestTypes.length; i++) {
         if (data['IncludeFusionRequestTypes'].includes(this.fusionRequestTypes[i])) {
           this.selectedRequestTypes[i] = true
           this.selectedRequestTypes[0] = false
+          auxRequestTypes.push(this.fusionRequestTypes[i])
         }
         else
           this.selectedRequestTypes[i] = false
       }
+      this.newTestForm.controls['IncludeFusionRequestTypes'].setValue(auxRequestTypes)
     }
   }
 
@@ -122,49 +133,39 @@ export class TestFormComponent implements OnInit {
   }
 
   loadADropDownData() {
-
     return forkJoin([this.dbService.getAirlines(), this.dbService.getAirports(), this.dbService.getFusionRequestTypes()])
-    this.dbService.getAirlines()
-      .subscribe(data => {
-        this.airlines = data.split(/[\r\n]+/).filter(Boolean)
-        this.airlines[0] = 'All'
-      });
-
-    this.dbService.getAirports()
-      .subscribe(data => {
-        this.airports = data.split(/[\r\n]+/).filter(Boolean)
-        this.airports[0] = 'All'
-      });
-
-    this.dbService.getFusionRequestTypes()
-      .subscribe(data => {
-        this.fusionRequestTypes = data.split(/[\r\n]+/).filter(Boolean)
-        this.fusionRequestTypes[0] = 'All'
-      });
   }
 
 
   onSubmit(): void {
     this.errorMessage = ""
     let that = this
-
     this.setDefaultValueForArray('IncludeAirlines')
     this.setDefaultValueForArray('IncludeAirports')
     this.setDefaultValueForArray('IncludeFusionRequestTypes')
+    console.log(this.newTestForm.value)
     let formHandle = this.router
     if (this.newTestForm.valid) {
       if (isNaN(this.TestId)) {
         this.dbService.postNewTest(this.newTestForm.value).subscribe({
-          next(x) { formHandle.navigate(['/home']); },
+          next(x) { 
+            formHandle.navigate(['/home']); 
+          },
           error(err) { that.errorMessage = "The data could not be saved."; console.error(err); },
-          complete() { formHandle.navigate(['/home']); },
+          complete() { 
+            formHandle.navigate(['/home']);
+           },
         });
       }
       else {
         this.dbService.putTest(this.TestId, this.newTestForm.value).subscribe({
-          next(x) { formHandle.navigate(['/home']);  },
+          next(x) {
+             formHandle.navigate(['/home']);
+          },
           error(err) { that.errorMessage = "The data could not be saved."; console.error(err); },
-          complete() { formHandle.navigate(['/home']); },
+          complete() { 
+            formHandle.navigate(['/home']);
+           },
         });
       }
     }
@@ -172,11 +173,13 @@ export class TestFormComponent implements OnInit {
       this.errorMessage = "The data is invalid"
     };
   }
+  
   // This function is needed because if the user hasn't changed the selection of the select controls, Angular
   // will return an emtpy array (despite the first "All" element been selected by default)
   // Thank you Angular for being such a peace of sheet
   private setDefaultValueForArray(arrayName: string) {
-    if (this.newTestForm.controls[arrayName].value == null) {
+    if (this.newTestForm.controls[arrayName].value == null || this.newTestForm.controls[arrayName].value.length===0) {
+      console.log("entre papi")
       this.newTestForm.controls[arrayName].setValue(["All"])
     }
   }

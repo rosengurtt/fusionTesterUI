@@ -15,3 +15,8 @@ export class Test {
   ToDate: string | null
   IncludeFusionRequestType: string
 }
+
+export enum TestAction {
+  start = "start",
+  stop = "stop"
+}

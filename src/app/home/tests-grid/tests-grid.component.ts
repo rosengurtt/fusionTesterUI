@@ -1,9 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Test } from '../../shared/test'
-import { Observable, Subscription } from 'rxjs';
+import {  TestAction } from '../../shared/test'
+import { Observable, Subscription, interval } from 'rxjs';
 import { DbService } from 'src/app/shared/db/db.service';
-import { map } from "rxjs/operators";
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tests-grid',
@@ -16,24 +15,31 @@ export class TestsGridComponent implements OnInit {
   pageSize: number = 10
   currentPage: number = 1
   totalPages: number
-  pages : number[]
-
-  columns: string[] = ["TestId", "TestName", "TestDescription", "TestCreator", "CreationDateTime", 
-                      "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "EndDateTime", "FromDate", "ToDate", "TotalRecords"]
-  constructor(private dbService: DbService, private router: Router) { }
+  pages: number[]
+  testRunning: boolean[]
+  testStopping: boolean[]
+  refreshPeriodInSeconds: number = 30
+  
+  columns: string[] = ["TestId", "TestName", "TestDescription", "TestCreator", "CreationDateTime",
+    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed", "TotalRecords"]
+  constructor(private dbService: DbService, private router: Router) {
+    let that = this
+    interval(this.refreshPeriodInSeconds * 1000).subscribe(x => { that.loadGrid() })
+  }
 
   ngOnInit() {
     this.dbService.getTestsStatistics()
       .subscribe(data => {
         this.totalTests = data.data.Tests
-        this.totalPages = (this.totalTests % this.pageSize != 0) ? Math.floor(this.totalTests / this.pageSize) + 1: this.totalTests / this.pageSize
-        this.pages = Array.from(Array(this.totalPages),(x,i)=>i+1)
+        this.totalPages = (this.totalTests % this.pageSize != 0) ? Math.floor(this.totalTests / this.pageSize) + 1 : this.totalTests / this.pageSize
+        this.pages = Array.from(Array(this.totalPages), (x, i) => i + 1)
       })
     this.loadGrid()
   }
 
   loadGrid() {
     this.tests$ = this.dbService.getTests(this.pageSize, this.currentPage);
+    this.testRunning = new Array(this.pageSize)
   }
 
   setPage(i: number) {
@@ -41,11 +47,32 @@ export class TestsGridComponent implements OnInit {
     this.loadGrid()
   }
 
-  onClickNewTest(){
-    this.router.navigate(['/newTest/new'])
+  onClickEditTest(testId) {
+    this.router.navigate(['/newTest/' + testId])
   }
 
-  startTest(testId){
-console.log(testId)
+  startTest(testId) {
+    console.log("Will start test " + testId)
+    let that = this
+    this.dbService.startStopTest(testId, TestAction.start).subscribe(
+      data => {
+        if (data['result'] === 'success') {
+          that.loadGrid()
+        }
+      },
+      err => { console.log(err) }
+    )
+  }
+
+  stopTest(testId){
+    let that = this
+    this.dbService.startStopTest(testId, TestAction.stop).subscribe(
+      data => {
+        if (data['result'] === 'success') {
+          that.loadGrid()
+        }
+      },
+      err => { console.log(err) }
+    )
   }
 }
