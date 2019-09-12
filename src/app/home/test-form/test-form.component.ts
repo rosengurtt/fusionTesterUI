@@ -59,15 +59,13 @@ export class TestFormComponent implements OnInit {
         else {
 
           this.dbService.getTest(this.TestId).subscribe({
-            next(x) { that.populateForm(x[0]) }
+            next(x) { that.populateForm(x) }
           })
         }
       }
     )
-
-
-
   }
+  get TestName() { return this.newTestForm.get('TestName'); }
 
   private populateForm(data: any) {
     this.selectedAirports = new Array(this.airports.length)
@@ -96,7 +94,7 @@ export class TestFormComponent implements OnInit {
           this.selectedAirports[i] = false
       }
       this.newTestForm.controls['IncludeAirports'].setValue(auxAirports)
-      
+
       let auxAirlines: string[] = []
       for (let i = 1; i < this.airlines.length; i++) {
         if (data['IncludeAirlines'].includes(this.airlines[i])) {
@@ -106,7 +104,7 @@ export class TestFormComponent implements OnInit {
         }
         else
           this.selectedAirlines[i] = false
-      }      
+      }
       this.newTestForm.controls['IncludeAirlines'].setValue(auxAirlines)
 
       let auxRequestTypes: string[] = []
@@ -140,46 +138,61 @@ export class TestFormComponent implements OnInit {
   onSubmit(): void {
     this.errorMessage = ""
     let that = this
+    this.setControlsAsTouched()
     this.setDefaultValueForArray('IncludeAirlines')
     this.setDefaultValueForArray('IncludeAirports')
     this.setDefaultValueForArray('IncludeFusionRequestTypes')
     console.log(this.newTestForm.value)
     let formHandle = this.router
-    if (this.newTestForm.valid) {
+    if (!this.newTestForm.errors) {
       if (isNaN(this.TestId)) {
         this.dbService.postNewTest(this.newTestForm.value).subscribe({
-          next(x) { 
-            formHandle.navigate(['/home']); 
+          next(x) {
+            formHandle.navigate(['/home']);
           },
           error(err) { that.errorMessage = "The data could not be saved."; console.error(err); },
-          complete() { 
+          complete() {
             formHandle.navigate(['/home']);
-           },
+          },
         });
       }
       else {
         this.dbService.putTest(this.TestId, this.newTestForm.value).subscribe({
           next(x) {
-             formHandle.navigate(['/home']);
+            formHandle.navigate(['/home']);
           },
           error(err) { that.errorMessage = "The data could not be saved."; console.error(err); },
-          complete() { 
+          complete() {
             formHandle.navigate(['/home']);
-           },
+          },
         });
       }
     }
     else {
       this.errorMessage = "The data is invalid"
+     console.log( this.newTestForm.errors)
     };
   }
   
+setControlsAsTouched(){
+  Object.keys(this.newTestForm.controls).forEach(field => { 
+    const control = this.newTestForm.get(field);           
+    control.markAsTouched({ onlySelf: true });   
+  });
+}
+
+  displayFieldCss(field: string) {    
+    let control =this.newTestForm.get(field);
+    return {
+      'is-invalid': !control.valid && control.touched
+    };
+  }
+
   // This function is needed because if the user hasn't changed the selection of the select controls, Angular
   // will return an emtpy array (despite the first "All" element been selected by default)
   // Thank you Angular for being such a peace of sheet
   private setDefaultValueForArray(arrayName: string) {
-    if (this.newTestForm.controls[arrayName].value == null || this.newTestForm.controls[arrayName].value.length===0) {
-      console.log("entre papi")
+    if (this.newTestForm.controls[arrayName].value == null || this.newTestForm.controls[arrayName].value.length === 0) {
       this.newTestForm.controls[arrayName].setValue(["All"])
     }
   }
@@ -199,5 +212,7 @@ function fromDateOlderThanToDateValidator(group: FormGroup): ValidationErrors | 
     return null;
   }
 }
+
+
 
 

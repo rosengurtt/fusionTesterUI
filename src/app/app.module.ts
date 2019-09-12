@@ -10,6 +10,7 @@ import { JwPaginationComponent } from 'jw-angular-pagination';
 import { TestFormComponent } from './home/test-form/test-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { TestResultsGridComponent } from './home/test-results-grid/test-results-grid.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: TestsGridComponent },
@@ -22,7 +23,8 @@ const appRoutes: Routes = [
     AppComponent,
     TestsGridComponent,
     JwPaginationComponent,
-    TestFormComponent
+    TestFormComponent,
+    TestResultsGridComponent
   ],
   imports: [
     BrowserModule,

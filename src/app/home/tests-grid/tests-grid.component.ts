@@ -12,20 +12,18 @@ import { Router } from '@angular/router';
 export class TestsGridComponent implements OnInit {
   tests$: Observable<any[]>
   totalTests: number
-  pageSize: number = 10
+  pageSize: number = 6
   currentPage: number = 1
   totalPages: number
   pages: number[]
-  testRunning: boolean[]
   testStopping: boolean[]
   refreshPeriodInSeconds: number = 30
+  selectedTest: number = null
   
   columns: string[] = ["TestId", "TestName", "TestDescription", "TestCreator", "CreationDateTime",
-    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed", "TotalRecords"]
-  constructor(private dbService: DbService, private router: Router) {
-    let that = this
-    interval(this.refreshPeriodInSeconds * 1000).subscribe(x => { that.loadGrid() })
-  }
+    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed", 
+    "NumberOfErrors", "TotalRecords"]
+  constructor(private dbService: DbService, private router: Router) { }
 
   ngOnInit() {
     this.dbService.getTestsStatistics()
@@ -38,8 +36,7 @@ export class TestsGridComponent implements OnInit {
   }
 
   loadGrid() {
-    this.tests$ = this.dbService.getTests(this.pageSize, this.currentPage);
-    this.testRunning = new Array(this.pageSize)
+    this.tests$ = this.dbService.getTests(this.pageSize, this.currentPage)
   }
 
   setPage(i: number) {
@@ -52,14 +49,9 @@ export class TestsGridComponent implements OnInit {
   }
 
   startTest(testId) {
-    console.log("Will start test " + testId)
     let that = this
     this.dbService.startStopTest(testId, TestAction.start).subscribe(
-      data => {
-        if (data['result'] === 'success') {
-          that.loadGrid()
-        }
-      },
+      data => {    },
       err => { console.log(err) }
     )
   }
@@ -67,12 +59,17 @@ export class TestsGridComponent implements OnInit {
   stopTest(testId){
     let that = this
     this.dbService.startStopTest(testId, TestAction.stop).subscribe(
-      data => {
-        if (data['result'] === 'success') {
-          that.loadGrid()
-        }
-      },
+      data => {  },
       err => { console.log(err) }
     )
+  }
+
+  onTestRowClicked(testId){
+    console.log("clickeo esta mierda "+ testId)
+    this.selectedTest = testId
+  }
+
+  isTestSelected(testId){
+    return  this.selectedTest == testId
   }
 }

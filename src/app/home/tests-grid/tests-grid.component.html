@@ -1,58 +1,69 @@
-<div style="overflow-x:auto;width: 1400px;padding:10px">
-    <button type="button" class="btn btn-primary pull-right" (click)="onClickEditTest('new')">New Test</button>
+<div class="row">
+
+    <div class="col m-2">
+        <button type="button" class="btn btn-primary float-right " (click)="onClickEditTest('new')">New Test</button>
+    </div>
 </div>
-<div style="overflow-x:auto;width: 1400px;padding:10px">
 
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created by</th>
-            <th>Creation time</th>
-            <th>Airports</th>
-            <th>Airlines</th>
-            <th>Fusion Requests</th>
-            <th>Events from</th>
-            <th>Events to</th>
-            <th>Started</th>
-            <th>Finished</th>
-            <th>Records processed</th>
-            <th>Total records</th>
-            <th ></th>
-        </tr>
-        <tr *ngFor="let test of tests$ | async; let i = index">
-            <td *ngFor="let col of columns">
-                {{test[col] === '%' ? 'All' : test[col] }}
-            </td>
-            <td>
-                <div class="btn-group btn-group-justified" role="group" aria-label="Basic example">
+<div class="col m-2 pl-0">
 
-                    <!-- Edit button. Visible if job has never started-->
-                    <!--<a class="btn btn-primary pull-right" [routerLink]="['/newTest', test['TestId']]"
+    <table class="table table-striped table-dark">
+        <thead class="thead-light">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created by</th>
+                <th>Creation time</th>
+                <th>Airports</th>
+                <th>Airlines</th>
+                <th>Fusion Requests</th>
+                <th>Events from</th>
+                <th>Events to</th>
+                <th>Started</th>
+                <th>Finished</th>
+                <th>Records processed</th>
+                <th>Number of errors</th>
+                <th>Total records</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let test of tests$ | async; let i = index" [class.text-dark]="isTestSelected(test['TestId'])"
+            [class.bg-warning]="isTestSelected(test['TestId'])">
+                <td *ngFor="let col of columns" (click)="onTestRowClicked(test['TestId'])">
+                    {{test[col] === '%' ? 'All' : test[col] }}
+                </td>
+                <td>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="Basic example">
+
+                        <!-- Edit button. Visible if job has never started-->
+                        <!--<a class="btn btn-primary pull-right" [routerLink]="['/newTest', test['TestId']]"
                                 *ngIf="test['StartDateTime'] == null">Edit</a>-->
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary"
-                            (click)="onClickEditTest(test['TestId'])">Edit</button>
-                    </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" *ngIf="test['StartDateTime'] == null"
+                                (click)="onClickEditTest(test['TestId'])">Edit</button>
+                        </div>
 
-                    <!-- Start/Restart/Stop button. Visible if job hasn't finished and is not running. If job has started, shows 'Restart', otherwise 'Start'
+                        <!-- Start/Restart/Stop button. Visible if job hasn't finished and is not running. If job has started, shows 'Restart', otherwise 'Start'
                             If job is running, it shows 'Stop'-->
-                    <div class="btn-group">
-                        <button type="button" *ngIf="!test['TestIsRunning'] && test['StartDateTime'] == null"
-                            class="btn btn-primary" (click)="startTest(test['TestId'], i)">Start</button>
-                        <button type="button"
-                            *ngIf="!test['TestIsRunning']  && test['StartDateTime'] != null && test['EndDateTime'] == null"
-                            class="btn btn-primary" (click)="startTest(test['TestId'], i)">Restart</button>
-                        <button type="button" *ngIf="test['TestIsRunning'] " class="btn btn-primary"
-                            (click)="stopTest(test['TestId'], i)">Stop</button>
+                        <div class="btn-group">
+                            <button type="button" *ngIf="!test['TestIsRunning'] && test['StartDateTime'] == null"
+                                class="btn btn-primary" (click)="startTest(test['TestId'], i)">Start</button>
+                            <button type="button"
+                                *ngIf="!test['TestIsRunning']  && test['StartDateTime'] != null && test['EndDateTime'] == null"
+                                class="btn btn-primary" (click)="startTest(test['TestId'], i)">Restart</button>
+                            <button type="button" *ngIf="test['TestIsRunning'] " class="btn btn-primary"
+                                (click)="stopTest(test['TestId'], i)">Stop</button>
+                        </div>
                     </div>
-                </div>
-            </td>
-        </tr>
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>
-<div class="text-center" style="width: 1400px;padding:10px">
+
+<div>
     <ul *ngIf="totalTests > pageSize" class="pagination">
         <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
             <a (click)="setPage(1)" class="page-link">First</a>
@@ -70,4 +81,8 @@
             <a (click)="setPage(totalPages)" class="page-link">Last</a>
         </li>
     </ul>
+</div>
+
+<div>
+    <app-test-results-grid [TestId]="selectedTest"></app-test-results-grid>
 </div>
