@@ -45,7 +45,11 @@ export class TestsGridComponent implements OnInit {
   }
 
   onClickEditTest(testId) {
-    this.router.navigate(['/newTest/' + testId])
+    this.router.navigate(['/newTest/' + testId], { queryParams: {Clone: 'false'}})
+  }
+
+  onClickCloneTest(testId) {
+    this.router.navigate(['/newTest/' + testId], { queryParams: {Clone: 'true'}})
   }
 
   startTest(testId) {
@@ -65,7 +69,6 @@ export class TestsGridComponent implements OnInit {
   }
 
   onTestRowClicked(testId){
-    console.log("clickeo esta mierda "+ testId)
     this.selectedTest = testId
   }
 

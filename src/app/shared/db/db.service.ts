@@ -44,7 +44,7 @@ export class DbService {
       .set("page-size", pageSize.toString())
       .set("page", page.toString())
 
-    return timer(0, 10000)
+    return timer(0, 1000000)
     .pipe(
         flatMap(() => this.http.get<TestResult[]>(this.testsUrl+ '/' + testId + '/results', { params }))
     )
@@ -58,8 +58,11 @@ export class DbService {
   }
 
   public getTestResultsStatistics(testId: number): Observable<any> {
-    console.log(this.testsUrl + '/' + testId + '/results/statistics')
     return this.http.get<any>(this.testsUrl + '/' + testId + '/results/statistics');
+  }
+
+  public getResultDetails(testResultId: number): Observable<any> {
+    return this.http.get<any>(this.testsUrl +  '/results/' + testResultId);
   }
 
   public getAirlines(): Observable<any> {

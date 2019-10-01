@@ -43,6 +43,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary" *ngIf="test['StartDateTime'] == null"
                                 (click)="onClickEditTest(test['TestId'])">Edit</button>
+                            <button type="button" class="btn btn-primary" (click)="onClickCloneTest(test['TestId'])">Clone</button>
                         </div>
 
                         <!-- Start/Restart/Stop button. Visible if job hasn't finished and is not running. If job has started, shows 'Restart', otherwise 'Start'

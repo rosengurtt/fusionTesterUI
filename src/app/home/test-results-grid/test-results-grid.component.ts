@@ -16,28 +16,42 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
   currentPage: number = 1
   totalPages: number
   pages: number[]
+  selectedResult: number = null
 
   columns: string[] = ["FusionRequestId", "TestResult", "NumberOfDifferences", "DCScallsMatch", "Airline",
-  "Airport", "FusionRequestType", "EventTime"]
+    "Airport", "FusionRequestType", "EventTime"]
+
   constructor(private dbService: DbService) { }
 
   ngOnInit() {
 
   }
   loadGrid() {
-    console.log("voy a leer los results")
     this.results$ = this.dbService.getTestResults(this.TestId, this.pageSize, this.currentPage)
   }
 
-  ngOnChanges(){
-    console.log('el sorete es ' +this.TestId)
-    this.dbService.getTestResultsStatistics(this.TestId)
-      .subscribe(data => {
-        console.log(data)
-        this.totalResults = data.data.TotalRecords
-        this.totalPages = (this.totalResults % this.pageSize != 0) ? Math.floor(this.totalResults / this.pageSize) + 1 : this.totalResults / this.pageSize
-        this.pages = Array.from(Array(this.totalPages), (x, i) => i + 1)
-      })
+  ngOnChanges() {
+    if (this.TestId) {
+      this.dbService.getTestResultsStatistics(this.TestId)
+        .subscribe(data => {
+          this.totalResults = data.data.TotalRecords
+          this.totalPages = (this.totalResults % this.pageSize != 0) ? Math.floor(this.totalResults / this.pageSize) + 1 : this.totalResults / this.pageSize
+          this.pages = Array.from(Array(this.totalPages), (x, i) => i + 1)
+          this.loadGrid()
+        })
+    }
+  }
+
+  setPage(i: number) {
+    this.currentPage = i
     this.loadGrid()
+  }
+
+  onTestResultsRowClicked(testResultId){
+    this.selectedResult = testResultId
+  }
+
+  isTestResultsSelected(testResultId){
+    return  this.selectedResult == testResultId
   }
 }

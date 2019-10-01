@@ -26,7 +26,9 @@ export class TestFormComponent implements OnInit {
   newTestForm: FormGroup
   errorMessage: string = ""
   sub: any
+  sub2: any
   TestId: number
+  Clone: boolean
 
   constructor(private dbService: DbService, fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
 
@@ -45,9 +47,11 @@ export class TestFormComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.sub = this.route.params.subscribe(params => {
       this.TestId = + params['TestId'] // (+) converts string 'id' to a number
+    })
+    this.sub2 = this.route.queryParams.subscribe(params => {
+      this.Clone = (params['Clone'] == 'true')
     })
     let that = this
     this.loadADropDownData().subscribe(
@@ -145,7 +149,7 @@ export class TestFormComponent implements OnInit {
     console.log(this.newTestForm.value)
     let formHandle = this.router
     if (!this.newTestForm.errors) {
-      if (isNaN(this.TestId)) {
+      if (isNaN(this.TestId) || this.Clone == true) {
         this.dbService.postNewTest(this.newTestForm.value).subscribe({
           next(x) {
             formHandle.navigate(['/home']);

@@ -1,11 +1,12 @@
 export class TestResult {
     TestResultId: number
     FusionRequestId: string
-    TestResult: string
-    DCScallsMatch: boolean
-    NumberOfDifferences: number
-    Airport: string
-    Airline: string
     FusionRequestType: string
+    TestResult: string
+    TestTime: string
+    NumberOfDifferences: number
+    DCScallsMatch: boolean
+    Airline: string
+    Airport: string
     EventTime: string
 }
