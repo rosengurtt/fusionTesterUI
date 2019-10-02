@@ -23,6 +23,7 @@
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "wijmo": "^5.20192.624",
+    "xml-beautifier": "^0.4.2",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

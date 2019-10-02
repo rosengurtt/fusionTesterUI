@@ -1,49 +1,58 @@
-<div class="col m-2 pl-0">
+<div *ngIf="TestId">
+    <div class="col m-2 pl-0">
+        <div class="p-2">
+            <input type="checkbox" [checked]="ExcludeOKrecords" (change)="excludeOKclicked($event)"
+                class="btn btn-primary" id="ExcludeOKCheckbox" />
+            <label class="form-check-label  pl-2" for="ExcludeOKCheckbox">Show only error records</label>
+        </div>
 
-    <table class="table table-striped">
-        <thead class="thead-dark" *ngIf="totalResults > 0">
-            <tr>
-                <th>FusionRequestId</th>
-                <th>Test Result</th>
-                <th>Number of differences</th>
-                <th>DCS calls match</th>
-                <th>Airline</th>
-                <th>Airport</th>
-                <th>Request Type</th>
-                <th>Time of event</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let result of results$ | async; let i = index" [class.text-dark]="isTestResultsSelected(result['TestResultId'])">
-                <td *ngFor="let col of columns" (click)="onTestResultsRowClicked(result['TestResultId'])">
-                    {{ (result[col]).toString().substring(0,400) }}
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <table class="table table-striped">
+            <thead class="thead-dark" *ngIf="totalResults > 0">
+                <tr>
+                    <th>FusionRequestId</th>
+                    <th>Test Result</th>
+                    <th>Number of differences</th>
+                    <th>DCS calls match</th>
+                    <th>Airline</th>
+                    <th>Airport</th>
+                    <th>Request Type</th>
+                    <th>Time of event</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let result of results$ | async; let i = index"
+                    [class.text-dark]="isTestResultsSelected(result['TestResultId'])"
+                    [class.bg-warning]="isTestResultsSelected(result['TestResultId'])">
+                    <td *ngFor="let col of columns" (click)="onTestResultsRowClicked(result['TestResultId'])">
+                        {{ ((result[col]).toString().length > 220)? (result[col]).toString().substring(0,220) + "......": (result[col]).toString() }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<div>
-    <ul *ngIf="totalResults > pageSize" class="pagination">
-        <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
-            <a (click)="setPage(1)" class="page-link">First</a>
-        </li>
-        <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
-            <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
-        </li>
-        <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
-            <a (click)="setPage(page)" class="page-link">{{page}}</a>
-        </li>
-        <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
-            <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>
-        </li>
-        <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item last-item">
-            <a (click)="setPage(totalPages)" class="page-link">Last</a>
-        </li>
-    </ul>
-</div>
+    <div>
+        <ul *ngIf="totalResults > pageSize" class="pagination">
+            <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
+                <a (click)="setPage(1)" class="page-link">First</a>
+            </li>
+            <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
+                <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
+            </li>
+            <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
+                <a (click)="setPage(page)" class="page-link">{{page}}</a>
+            </li>
+            <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
+                <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>
+            </li>
+            <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item last-item">
+                <a (click)="setPage(totalPages)" class="page-link">Last</a>
+            </li>
+        </ul>
+    </div>
 
 
-<div>
-    <app-result-details  [TestResultId]="selectedResult" *ngIf="selectedResult"></app-result-details>
+    <div>
+        <app-result-details [TestResultId]="selectedResult" *ngIf="selectedResult"></app-result-details>
+    </div>
 </div>

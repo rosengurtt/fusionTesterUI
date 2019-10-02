@@ -31,18 +31,18 @@ export class DbService {
       .set("page-size", pageSize.toString())
       .set("page", page.toString())
       .set("date-from", dateFrom.toString())
-      .set("date-to", dateTo.toString());
-
+      .set("date-to", dateTo.toString())
     return timer(0, 10000)
     .pipe(
         flatMap(() => this.http.get<Test[]>(this.testsUrl, { params }))
     )
   }
 
-  public getTestResults(testId: number, pageSize: number = 10, page: number = 1): Observable<TestResult[]> {
+  public getTestResults(testId: number, pageSize: number = 10, page: number = 1, excludeOKresults: boolean=false): Observable<TestResult[]> {
     const params = new HttpParams()
       .set("page-size", pageSize.toString())
       .set("page", page.toString())
+      .set("exclude-ok-results", excludeOKresults.toString())
 
     return timer(0, 1000000)
     .pipe(

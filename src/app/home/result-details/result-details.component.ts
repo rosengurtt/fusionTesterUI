@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DbService } from '../shared/db/db.service';
+import { DbService } from '../../shared/db/db.service';
 
 @Component({
   selector: 'app-result-details',
@@ -25,6 +25,12 @@ export class ResultDetailsComponent implements OnInit {
           this.expectedDcsCalls = data[0].ExpectedDCScalls
           this.actualDcsCalls = data[0].ActualDCScalls
         })
+    }
+    else{
+      this.expectedFusionResponse = ''
+      this.actualFusionResponse = ''
+      this.expectedDcsCalls = ''
+      this.actualDcsCalls = ''
     }
   }
 

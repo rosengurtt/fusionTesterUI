@@ -1,0 +1,19 @@
+<div *ngIf="ExpectedFormatted.length > 0">
+        <div class="row">
+                <div class="col ml-2 mr-2 mb-0">
+                    <h3 class="bg-info p-3 rounded text-white m-0">{{Title}}</h3>
+                </div>
+            </div>
+            <div class="row ml-2 mr-2 mb-2">
+                <div class="col bg-warning mt-0">
+                    <h4>Expected</h4>
+                    <div [innerHTML]="ExpectedFormatted"></div>
+                    
+                </div>
+                <div class="col bg-warning">
+                    <h4>Actual</h4>
+                    <div [innerHTML]="ActualFormatted"></div>
+                    
+                </div>
+            </div>
+</div>

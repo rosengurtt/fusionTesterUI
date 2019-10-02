@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {  TestAction } from '../../shared/test'
+import { TestAction } from '../../shared/test'
 import { Observable, Subscription, interval } from 'rxjs';
 import { DbService } from 'src/app/shared/db/db.service';
 import { Router } from '@angular/router';
@@ -19,9 +19,9 @@ export class TestsGridComponent implements OnInit {
   testStopping: boolean[]
   refreshPeriodInSeconds: number = 30
   selectedTest: number = null
-  
+
   columns: string[] = ["TestId", "TestName", "TestDescription", "TestCreator", "CreationDateTime",
-    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed", 
+    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed",
     "NumberOfErrors", "TotalRecords"]
   constructor(private dbService: DbService, private router: Router) { }
 
@@ -40,39 +40,42 @@ export class TestsGridComponent implements OnInit {
   }
 
   setPage(i: number) {
-    this.currentPage = i
-    this.loadGrid()
+    if (i != this.currentPage) {
+      this.currentPage = i
+      this.selectedTest = null
+      this.loadGrid()
+    }
   }
 
   onClickEditTest(testId) {
-    this.router.navigate(['/newTest/' + testId], { queryParams: {Clone: 'false'}})
+    this.router.navigate(['/newTest/' + testId], { queryParams: { Clone: 'false' } })
   }
 
   onClickCloneTest(testId) {
-    this.router.navigate(['/newTest/' + testId], { queryParams: {Clone: 'true'}})
+    this.router.navigate(['/newTest/' + testId], { queryParams: { Clone: 'true' } })
   }
 
   startTest(testId) {
     let that = this
     this.dbService.startStopTest(testId, TestAction.start).subscribe(
-      data => {    },
+      data => { },
       err => { console.log(err) }
     )
   }
 
-  stopTest(testId){
+  stopTest(testId) {
     let that = this
     this.dbService.startStopTest(testId, TestAction.stop).subscribe(
-      data => {  },
+      data => { },
       err => { console.log(err) }
     )
   }
 
-  onTestRowClicked(testId){
+  onTestRowClicked(testId) {
     this.selectedTest = testId
   }
 
-  isTestSelected(testId){
-    return  this.selectedTest == testId
+  isTestSelected(testId) {
+    return this.selectedTest == testId
   }
 }

@@ -17,6 +17,7 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
   totalPages: number
   pages: number[]
   selectedResult: number = null
+  ExcludeOKrecords: boolean = false
 
   columns: string[] = ["FusionRequestId", "TestResult", "NumberOfDifferences", "DCScallsMatch", "Airline",
     "Airport", "FusionRequestType", "EventTime"]
@@ -27,31 +28,55 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
 
   }
   loadGrid() {
-    this.results$ = this.dbService.getTestResults(this.TestId, this.pageSize, this.currentPage)
+    this.results$ = this.dbService.getTestResults(this.TestId, this.pageSize, this.currentPage, this.ExcludeOKrecords)
   }
 
   ngOnChanges() {
     if (this.TestId) {
-      this.dbService.getTestResultsStatistics(this.TestId)
-        .subscribe(data => {
-          this.totalResults = data.data.TotalRecords
-          this.totalPages = (this.totalResults % this.pageSize != 0) ? Math.floor(this.totalResults / this.pageSize) + 1 : this.totalResults / this.pageSize
-          this.pages = Array.from(Array(this.totalPages), (x, i) => i + 1)
-          this.loadGrid()
-        })
+      this.updatePagingButtons()
+    }
+    else{
+      this.ExcludeOKrecords = false
+      this.selectedResult = null
     }
   }
 
-  setPage(i: number) {
-    this.currentPage = i
-    this.loadGrid()
+  updatePagingButtons() {
+    this.dbService.getTestResultsStatistics(this.TestId)
+      .subscribe(data => {
+        if (this.ExcludeOKrecords) {
+          this.totalResults = data.data.FailedRecords
+        }
+        else {
+          this.totalResults = data.data.TotalRecords
+        }
+        this.totalPages = (this.totalResults % this.pageSize != 0) ? Math.floor(this.totalResults / this.pageSize) + 1 : this.totalResults / this.pageSize
+        this.pages = Array.from(Array(this.totalPages), (x, i) => i + 1)
+        this.loadGrid()
+      })
   }
 
-  onTestResultsRowClicked(testResultId){
+  setPage(i: number) {
+    if (i != this.currentPage) {
+      console.log("seteo a null")
+      this.selectedResult = null
+      this.currentPage = i
+      this.loadGrid()
+    }
+  }
+
+  onTestResultsRowClicked(testResultId) {
     this.selectedResult = testResultId
   }
 
-  isTestResultsSelected(testResultId){
-    return  this.selectedResult == testResultId
+  isTestResultsSelected(testResultId) {
+    return this.selectedResult == testResultId
+  }
+
+  excludeOKclicked(event) {
+    this.ExcludeOKrecords = event.srcElement.checked
+    this.setPage(1)
+    this.loadGrid()
+    this.updatePagingButtons()
   }
 }

@@ -11,7 +11,8 @@ import { TestFormComponent } from './home/test-form/test-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TestResultsGridComponent } from './home/test-results-grid/test-results-grid.component';
-import { ResultDetailsComponent } from './result-details/result-details.component';
+import { ResultDetailsComponent } from './home/result-details/result-details.component';
+import { FileCompareComponent } from './shared/file-compare/file-compare.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: TestsGridComponent },
@@ -26,7 +27,8 @@ const appRoutes: Routes = [
     JwPaginationComponent,
     TestFormComponent,
     TestResultsGridComponent,
-    ResultDetailsComponent
+    ResultDetailsComponent,
+    FileCompareComponent
   ],
   imports: [
     BrowserModule,
