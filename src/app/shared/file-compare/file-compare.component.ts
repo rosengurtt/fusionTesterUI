@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { beautify } from 'xml-beautifier';
 
 @Component({
   selector: 'app-file-compare',

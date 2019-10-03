@@ -18,5 +18,6 @@ export class Test {
 
 export enum TestAction {
   start = "start",
-  stop = "stop"
+  stop = "stop",
+  dequeue = "dequeue"
 }

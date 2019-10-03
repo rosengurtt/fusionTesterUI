@@ -22,7 +22,7 @@ export class TestsGridComponent implements OnInit {
 
   columns: string[] = ["TestId", "TestName", "TestDescription", "TestCreator", "CreationDateTime",
     "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed",
-    "NumberOfErrors", "TotalRecords"]
+    "NumberOfErrors", "TotalRecords", "Status"]
   constructor(private dbService: DbService, private router: Router) { }
 
   ngOnInit() {
@@ -66,6 +66,14 @@ export class TestsGridComponent implements OnInit {
   stopTest(testId) {
     let that = this
     this.dbService.startStopTest(testId, TestAction.stop).subscribe(
+      data => { },
+      err => { console.log(err) }
+    )
+  }
+
+  dequeueTest(testId){
+    let that = this
+    this.dbService.startStopTest(testId, TestAction.dequeue).subscribe(
       data => { },
       err => { console.log(err) }
     )
