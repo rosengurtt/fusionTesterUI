@@ -71,8 +71,8 @@
         <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
             <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
         </li>
-        <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
-            <a (click)="setPage(page)" class="page-link">{{page}}</a>
+        <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item" >
+            <a (click)="setPage(page)" class="page-link" *ngIf="showPageLink(page)">{{page}}</a>
         </li>
         <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
             <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>

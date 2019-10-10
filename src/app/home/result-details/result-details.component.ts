@@ -17,6 +17,10 @@ export class ResultDetailsComponent implements OnInit {
 
   ngOnInit() { }
   ngOnChanges() {
+    this.expectedFusionResponse = ''
+    this.actualFusionResponse = ''
+    this.expectedDcsCalls = ''
+    this.actualDcsCalls = ''
     if (this.TestResultId) {
       this.dbService.getResultDetails(this.TestResultId)
         .subscribe(data => {
@@ -25,12 +29,6 @@ export class ResultDetailsComponent implements OnInit {
           this.expectedDcsCalls = data[0].ExpectedDCScalls
           this.actualDcsCalls = data[0].ActualDCScalls
         })
-    }
-    else{
-      this.expectedFusionResponse = ''
-      this.actualFusionResponse = ''
-      this.expectedDcsCalls = ''
-      this.actualDcsCalls = ''
     }
   }
 

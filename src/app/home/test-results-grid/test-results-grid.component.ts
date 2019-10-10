@@ -18,6 +18,7 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
   pages: number[]
   selectedResult: number = null
   ExcludeOKrecords: boolean = false
+  pageLinksToShow: number = 20
 
   columns: string[] = ["FusionRequestId", "TestResult", "NumberOfDifferences", "DCScallsMatch", "Airline",
     "Airport", "FusionRequestType", "EventTime"]
@@ -28,6 +29,7 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
 
   }
   loadGrid() {
+    this.selectedResult = null
     this.results$ = this.dbService.getTestResults(this.TestId, this.pageSize, this.currentPage, this.ExcludeOKrecords)
   }
 
@@ -35,7 +37,7 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
     if (this.TestId) {
       this.updatePagingButtons()
     }
-    else{
+    else {
       this.ExcludeOKrecords = false
       this.selectedResult = null
     }
@@ -58,8 +60,6 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
 
   setPage(i: number) {
     if (i != this.currentPage) {
-      console.log("seteo a null")
-      this.selectedResult = null
       this.currentPage = i
       this.loadGrid()
     }
@@ -78,5 +78,11 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
     this.setPage(1)
     this.loadGrid()
     this.updatePagingButtons()
+  }
+
+  showPageLink(page: number) {
+    if (page > this.currentPage - this.pageLinksToShow/2 && page < this.currentPage + this.pageLinksToShow/2 )
+      return true
+    return false
   }
 }

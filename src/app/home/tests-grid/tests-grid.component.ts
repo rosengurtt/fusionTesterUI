@@ -86,4 +86,8 @@ export class TestsGridComponent implements OnInit {
   isTestSelected(testId) {
     return this.selectedTest == testId
   }
+
+  showPageLink(page: number){
+    return page < 5 || page > this.totalPages - 5
+  }
 }
