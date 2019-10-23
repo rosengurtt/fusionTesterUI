@@ -12,7 +12,7 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
   @Input() TestId: number
   results$: Observable<TestResult[]>
   totalResults: number
-  pageSize: number = 6
+  pageSize: number = 8
   currentPage: number = 1
   totalPages: number
   pages: number[]
@@ -84,5 +84,11 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
     if (page > this.currentPage - this.pageLinksToShow/2 && page < this.currentPage + this.pageLinksToShow/2 )
       return true
     return false
+  }
+
+  getTextToDisplay(text){
+    if (text != null){
+      return (text.toString().length > 220)? text.toString().substring(0,220) + "......": text.toString()
+    }
   }
 }

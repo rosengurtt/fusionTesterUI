@@ -24,7 +24,7 @@
                     [class.text-dark]="isTestResultsSelected(result['TestResultId'])"
                     [class.bg-warning]="isTestResultsSelected(result['TestResultId'])">
                     <td *ngFor="let col of columns" (click)="onTestResultsRowClicked(result['TestResultId'])">
-                        {{ ((result[col]).toString().length > 220)? (result[col]).toString().substring(0,220) + "......": (result[col]).toString() }}
+                        {{ getTextToDisplay(result[col])  }}
                     </td>
                 </tr>
             </tbody>

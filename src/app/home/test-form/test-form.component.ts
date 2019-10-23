@@ -123,6 +123,10 @@ export class TestFormComponent implements OnInit {
       }
       this.newTestForm.controls['IncludeFusionRequestTypes'].setValue(auxRequestTypes)
     }
+    else{
+      this.newTestForm.controls['TestDescription'].setValue('')
+      this.newTestForm.controls['TestCreator'].setValue('')
+    }
   }
 
   fillDropdownArrays(responseList) {
@@ -146,7 +150,6 @@ export class TestFormComponent implements OnInit {
     this.setDefaultValueForArray('IncludeAirlines')
     this.setDefaultValueForArray('IncludeAirports')
     this.setDefaultValueForArray('IncludeFusionRequestTypes')
-    console.log(this.newTestForm.value)
     let formHandle = this.router
     if (!this.newTestForm.errors) {
       if (isNaN(this.TestId) || this.Clone == true) {
@@ -200,6 +203,7 @@ setControlsAsTouched(){
       this.newTestForm.controls[arrayName].setValue(["All"])
     }
   }
+
 
   cancel(): void {
     this.router.navigate(['/home']);
