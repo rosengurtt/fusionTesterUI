@@ -1,0 +1,100 @@
+<div class="row">
+
+    <div class="col m-2">
+        <span class="display-4 text-info font-weight-bold">Fusion Requests</span>
+    </div>
+</div>
+
+
+
+<div class="col m-2 pl-0 table-responsive">
+
+    <table class="table table-striped table-dark">
+        <thead class="thead-light">
+            <tr>
+                <th>FusionRequestId</th>
+                <th>RequestType</th>
+                <th>Airline&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th>Airport&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th>PNR</th>
+                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RequestTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th>FusionRequestXml</th>
+                <th>FusionResponseXml</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td>
+                    <select class="form-control" multiple (change)="applyFilter($event.target)" id="RequestTypes">
+                        <option *ngFor="let requestType of requestTypes" >{{requestType}}</option>
+                    </select>
+                </td>
+                <td >
+                    <select class="form-control" multiple (change)="applyFilter($event.target)" id="Airlines">
+                        <option *ngFor="let airline of airlines" >{{airline}}</option>
+                    </select>
+
+                </td>
+                <td>
+                    <select class="form-control" (change)="applyFilter($event.target)" multiple id="Airports">
+                        <option *ngFor="let airport of airports" >{{airport}}</option>
+                    </select>
+
+                </td>
+                <td>
+                    <input type="text" id="PNR" class="form-control" (keyup)="applyFilter($event.target)" >
+                </td>
+                <td>
+                        <input type="text" id="dateFrom" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{beginningOfTime}}">
+                        <input type="text" id="dateTo" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{endOfTime}}">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr *ngFor="let request of requests$ | async; let i = index"
+                [class.text-dark]="isTestSelected(request['FusionRequestId'])"
+                [class.bg-warning]="isTestSelected(request['FusionRequestId'])">
+                <td *ngFor="let col of columns" (click)="onTestRowClicked(request['FusionRequestId'])" >
+                    {{request[col] === '%' ? 'All' : request[col] }}
+                </td>
+                <td>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="Basic example">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary"
+                                (click)="onClickExecute(request['FusionRequestId'])">Execute</button>
+                        </div>
+
+                    </div>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <ul *ngIf="totalRequests > pageSize" class="pagination">
+        <li [ngClass]="{disabled:currentPage === 1}" class="page-item first-item">
+            <a (click)="setPage(1)" class="page-link">First</a>
+        </li>
+        <li [ngClass]="{disabled:currentPage === 1}" class="page-item previous-item">
+            <a (click)="setPage(currentPage - 1)" class="page-link">Previous</a>
+        </li>
+        <li *ngFor="let page of pages" [ngClass]="{active:currentPage === page}" class="page-item number-item">
+            <a (click)="setPage(page)" class="page-link" *ngIf="showPageLink(page)">{{page}}</a>
+        </li>
+        <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item next-item">
+            <a (click)="setPage(currentPage + 1)" class="page-link">Next</a>
+        </li>
+        <li [ngClass]="{disabled:currentPage === totalPages}" class="page-item last-item">
+            <a (click)="setPage(totalPages)" class="page-link">Last</a>
+        </li>
+    </ul>
+</div>
+
+<div>
+    <!--<app-test-results-grid [TestId]="selectedTest"></app-test-results-grid>-->
+</div>

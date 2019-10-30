@@ -6,6 +6,7 @@ import { timer } from 'rxjs';
 import { catchError, map, tap, flatMap } from 'rxjs/operators';
 import { TestsStatistics } from '../TestsStatistics';
 import { TestResult } from '../test.result';
+import { FusionRequest } from '../fusion.request';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,9 @@ export class DbService {
   private airlinesUrl = this.baseUrl + '/airlines'
   private fusionRequestTypesUrl = this.baseUrl + '/fusion-request-types'
   private testExecutionUrl = this.baseUrl + '/execution'
-  
+  private fusionRequestsUrl = this.baseUrl + '/fusion-requests'
+  private fusionRequestsStatisticsUrl = this.baseUrl + '/fusion-requests/statistics'
+
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -33,21 +36,21 @@ export class DbService {
       .set("date-from", dateFrom.toString())
       .set("date-to", dateTo.toString())
     return timer(0, 10000)
-    .pipe(
+      .pipe(
         flatMap(() => this.http.get<Test[]>(this.testsUrl, { params }))
-    )
+      )
   }
 
-  public getTestResults(testId: number, pageSize: number = 10, page: number = 1, excludeOKresults: boolean=false): Observable<TestResult[]> {
+  public getTestResults(testId: number, pageSize: number = 10, page: number = 1, excludeOKresults: boolean = false): Observable<TestResult[]> {
     const params = new HttpParams()
       .set("page-size", pageSize.toString())
       .set("page", page.toString())
       .set("exclude-ok-results", excludeOKresults.toString())
 
     return timer(0, 1000000)
-    .pipe(
-        flatMap(() => this.http.get<TestResult[]>(this.testsUrl+ '/' + testId + '/results', { params }))
-    )
+      .pipe(
+        flatMap(() => this.http.get<TestResult[]>(this.testsUrl + '/' + testId + '/results', { params }))
+      )
   }
   public getTest(TestId: number) {
     return this.http.get<Test[]>(this.testsUrl + "/" + TestId);
@@ -62,7 +65,7 @@ export class DbService {
   }
 
   public getResultDetails(testResultId: number): Observable<any> {
-    return this.http.get<any>(this.testsUrl +  '/results/' + testResultId);
+    return this.http.get<any>(this.testsUrl + '/results/' + testResultId);
   }
 
   public getAirlines(): Observable<any> {
@@ -88,6 +91,20 @@ export class DbService {
   public startStopTest(TestId: number, testAction: TestAction) {
     return this.http.post(this.testExecutionUrl + '/' + TestId, { "Action": testAction })
   }
-  
 
+  public getFusionRequests(args: any): Observable<any> {
+    let params = new HttpParams({ fromObject: args });
+
+    return this.http.get<FusionRequest[]>(this.fusionRequestsUrl, {  params })
+  }
+
+  public getFusionRequestsStatistics(args: any): Observable<any> {
+    let params = new HttpParams({ fromObject: args });
+
+    return  this.http.get<FusionRequest[]>(this.fusionRequestsStatisticsUrl, { params })      
+  }
+
+  public getFusionRequestExecute(fusionRequestId: number): Observable<any> {
+    return this.http.get<any>(this.fusionRequestsUrl + '/' + fusionRequestId );
+  }
 }

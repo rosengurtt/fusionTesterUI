@@ -13,6 +13,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TestResultsGridComponent } from './home/test-results-grid/test-results-grid.component';
 import { ResultDetailsComponent } from './home/result-details/result-details.component';
 import { FileCompareComponent } from './shared/file-compare/file-compare.component';
+import { FusionRequestsGridComponent } from './home/fusion-requests-grid/fusion-requests-grid.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: TestsGridComponent },
@@ -28,7 +29,8 @@ const appRoutes: Routes = [
     TestFormComponent,
     TestResultsGridComponent,
     ResultDetailsComponent,
-    FileCompareComponent
+    FileCompareComponent,
+    FusionRequestsGridComponent
   ],
   imports: [
     BrowserModule,
