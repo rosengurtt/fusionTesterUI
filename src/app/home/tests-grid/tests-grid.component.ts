@@ -19,24 +19,43 @@ export class TestsGridComponent implements OnInit {
   testStopping: boolean[]
   refreshPeriodInSeconds: number = 30
   selectedTest: number = null
+  beginningOfTime: string = "2019-01-01 12:00:00.00"
+  endOfTime: string = "2030-01-01 12:00:00.00"
+  selectedDateFrom: string
+  selectedDateTo: string
+  testNameTyped: string
+  dateFromIsValid: boolean = true
+  dateToIsValid: boolean = true
 
   columns: string[] = ["TestId", "TestName", "TestDescription", "TestCreator", "CreationDateTime",
-    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "FromDate", "ToDate", "StartDateTime", "EndDateTime", "RecordsProcessed",
+    "IncludeAirports", "IncludeAirlines", "IncludeFusionRequestTypes", "DateFrom", "DateTo", "StartDateTime", "EndDateTime", "RecordsProcessed",
     "NumberOfErrors", "TotalRecords", "Status"]
   constructor(private dbService: DbService, private router: Router) { }
 
   ngOnInit() {
-    this.dbService.getTestsStatistics()
+
+    this.loadGrid()
+  }
+
+  loadGrid() {
+    let args: any = {}
+    args['page-size'] = this.pageSize
+    args['page'] = this.currentPage
+
+    if (this.selectedDateFrom && this.selectedDateFrom != this.beginningOfTime )
+      args['date-from'] = this.selectedDateFrom
+    if (this.selectedDateTo && this.selectedDateTo != this.endOfTime )
+      args['date-to'] = this.selectedDateTo
+    if (this.testNameTyped )
+      args['test-name'] = this.testNameTyped
+
+    this.dbService.getTestsStatistics(args)
       .subscribe(data => {
         this.totalTests = data.data.Tests
         this.totalPages = (this.totalTests % this.pageSize != 0) ? Math.floor(this.totalTests / this.pageSize) + 1 : this.totalTests / this.pageSize
         this.pages = Array.from(Array(this.totalPages), (x, i) => i + 1)
       })
-    this.loadGrid()
-  }
-
-  loadGrid() {
-    this.tests$ = this.dbService.getTests(this.pageSize, this.currentPage)
+    this.tests$ = this.dbService.getTests(args)
   }
 
   setPage(i: number) {
@@ -90,4 +109,37 @@ export class TestsGridComponent implements OnInit {
   showPageLink(page: number){
     return page < 5 || page > this.totalPages - 5
   }
+  applyFilter(control){
+    switch (control.id){
+      case "dateFrom":
+        let dateFrom =  new  Date(control.value)       
+        if (dateFrom.toString() == 'Invalid Date'){
+           this.dateFromIsValid = false
+          return
+        }
+        else {
+          if (control.value.length < 10) return
+          this.selectedDateFrom = dateFrom.toISOString()
+          this.dateFromIsValid = true
+        }
+        break
+      case "dateTo":
+          let dateTo =  new  Date(control.value)       
+          if (dateTo.toString() == 'Invalid Date'){
+            this.dateToIsValid = false
+            return
+          } 
+          else {
+            if (control.value.length < 10) return
+            this.selectedDateTo = dateTo.toISOString()
+            this.dateToIsValid = true            
+          }
+        break
+      case("testName"):
+        this.testNameTyped = control.value
+        break;
+    }
+    this.loadGrid() 
+  }
+
 }

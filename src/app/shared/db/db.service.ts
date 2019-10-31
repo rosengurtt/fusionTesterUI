@@ -29,36 +29,32 @@ export class DbService {
 
   constructor(private http: HttpClient) { }
 
-  public getTests(pageSize: number = 10, page: number = 1, dateFrom: string = "1900-01-01", dateTo: string = "3000-01-01"): Observable<Test[]> {
-    const params = new HttpParams()
-      .set("page-size", pageSize.toString())
-      .set("page", page.toString())
-      .set("date-from", dateFrom.toString())
-      .set("date-to", dateTo.toString())
+  public getTests(args: any): Observable<Test[]> {
+    let params = new HttpParams({ fromObject: args });
+
     return timer(0, 10000)
       .pipe(
         flatMap(() => this.http.get<Test[]>(this.testsUrl, { params }))
       )
   }
+  
+  public getTestsStatistics(args:any): Observable<any> {
+    let params = new HttpParams({ fromObject: args });
+    return this.http.get<any>(this.testsStatisticsUrl, { params });
+  }
 
-  public getTestResults(testId: number, pageSize: number = 10, page: number = 1, excludeOKresults: boolean = false): Observable<TestResult[]> {
-    const params = new HttpParams()
-      .set("page-size", pageSize.toString())
-      .set("page", page.toString())
-      .set("exclude-ok-results", excludeOKresults.toString())
+  public getTestResults(args: any): Observable<TestResult[]> {
+    let params = new HttpParams({ fromObject: args });
 
     return timer(0, 1000000)
       .pipe(
-        flatMap(() => this.http.get<TestResult[]>(this.testsUrl + '/' + testId + '/results', { params }))
+        flatMap(() => this.http.get<TestResult[]>(this.testsUrl + '/' + args.testId + '/results', { params }))
       )
   }
   public getTest(TestId: number) {
     return this.http.get<Test[]>(this.testsUrl + "/" + TestId);
   }
 
-  public getTestsStatistics(): Observable<any> {
-    return this.http.get<any>(this.testsStatisticsUrl);
-  }
 
   public getTestResultsStatistics(testId: number): Observable<any> {
     return this.http.get<any>(this.testsUrl + '/' + testId + '/results/statistics');

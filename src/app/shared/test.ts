@@ -11,8 +11,8 @@ export class Test {
   TestCreator: string
   IncludeAirports: string
   IncludeAirlines: string
-  FromDate: string | null
-  ToDate: string | null
+  DateFrom: string | null
+  DateTo: string | null
   IncludeFusionRequestType: string
 }
 

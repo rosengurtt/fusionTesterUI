@@ -30,6 +30,30 @@
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td></td>
+                <td><input type="text" id="testName" class="form-control" (keyup)="applyFilter($event.target)" ></td>
+                <td></td>
+                <td></td>
+                <td>
+                        <input type="text" id="dateFrom" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{beginningOfTime}}" 
+                            [className]="dateFromIsValid?'form-control m-2 is-valid':'form-control m-2 is-invalid'">
+                        <input type="text" id="dateTo" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{endOfTime}}"
+                            [className]="dateToIsValid?'form-control m-2 is-valid':'form-control m-2 is-invalid'">
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
             <tr *ngFor="let test of tests$ | async; let i = index" [class.text-dark]="isTestSelected(test['TestId'])"
             [class.bg-warning]="isTestSelected(test['TestId'])">
                 <td *ngFor="let col of columns" (click)="onTestRowClicked(test['TestId'])">

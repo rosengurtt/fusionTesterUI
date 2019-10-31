@@ -47,8 +47,10 @@
                     <input type="text" id="PNR" class="form-control" (keyup)="applyFilter($event.target)" >
                 </td>
                 <td>
-                        <input type="text" id="dateFrom" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{beginningOfTime}}">
-                        <input type="text" id="dateTo" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{endOfTime}}">
+                        <input type="text" id="dateFrom" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{beginningOfTime}}"
+                            [className]="dateFromIsValid?'form-control m-2 is-valid':'form-control m-2 is-invalid'">
+                        <input type="text" id="dateTo" class="form-control m-2" (keyup)="applyFilter($event.target)" value="{{endOfTime}}"
+                        [className]="dateToIsValid?'form-control m-2 is-valid':'form-control m-2 is-invalid'">
                 </td>
                 <td></td>
                 <td></td>

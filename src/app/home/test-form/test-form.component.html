@@ -4,7 +4,7 @@
         <div class="form-group">
             <label for="TestName">Name</label>
             <div>
-                <input type="text" class="form-control has-error" formControlName="TestName" required [ngClass]="displayFieldCss('TestName')">
+                <input type="text" class="form-control has-error" id="TestName" formControlName="TestName" required [ngClass]="displayFieldCss('TestName')">
             </div>
         </div>
 
@@ -23,21 +23,23 @@
         </div>
 
         <div class="form-group">
-            <label for="FromDate">From Date</label>
+            <label for="DateFrom">Date From</label>
             <div>
-                <input type="text" class="form-control" formControlName="FromDate">
+                <input type="text"  formControlName="DateFrom" (keyup)="applyFilter($event.target)" id="dateFrom" 
+                [className]="dateFromIsValid?'form-control m-2 is-valid':'form-control m-2 is-invalid'">
             </div>
         </div>
 
         <div class="form-group">
-            <label for="ToDate">To Date</label>
+            <label for="DateTo">Date To</label>
             <div>
-                <input type="text" class="form-control" formControlName="ToDate">
+                <input type="text"  formControlName="DateTo" (keyup)="applyFilter($event.target)" id="dateTo" 
+                    [className]="dateToIsValid?'form-control m-2 is-valid':'form-control m-2 is-invalid'">
             </div>
         </div>
 
         <div class="form-group">
-            <label for="ToDate">Include airlines</label>
+            <label for="IncludeAirlines">Include airlines</label>
             <select class="form-control" multiple formControlName="IncludeAirlines">
                 <option *ngFor="let airlineSelected of selectedAirlines; let i = index"
                     [attr.selected]="airlineSelected ? true : null">{{airlines[i]}}</option>
@@ -45,7 +47,7 @@
         </div>
 
         <div class="form-group">
-            <label for="ToDate">Include airports</label>
+            <label for="IncludeAirports">Include airports</label>
             <select class="form-control" multiple formControlName="IncludeAirports">
                 <option *ngFor="let airportSelected of selectedAirports, let i = index"
                     [attr.selected]="airportSelected ? true : null">{{airports[i]}}</option>
@@ -53,14 +55,14 @@
         </div>
 
         <div class="form-group">
-            <label for="ToDate">Include fusion request types</label>
+            <label for="IncludeFusionRequestTypes">Include fusion request types</label>
             <select class="form-control" multiple formControlName="IncludeFusionRequestTypes">
                 <option *ngFor="let requestTypeSelected of selectedRequestTypes, let i =  index"
                     [attr.selected]="requestTypeSelected ? true : null">{{fusionRequestTypes[i]}}</option>
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary m-2">Submit</button>
+        <button type="submit" class="btn btn-primary m-2" [disabled]="!dateFromIsValid || !dateToIsValid || TestName.errors.required">Submit</button>
         <button type="button" class="btn btn-primary m-2" (click)="cancel()">Cancel</button>
 
     </form>

@@ -29,6 +29,8 @@ export class TestFormComponent implements OnInit {
   sub2: any
   TestId: number
   Clone: boolean
+  dateFromIsValid: boolean = true
+  dateToIsValid: boolean = true
 
   constructor(private dbService: DbService, fb: FormBuilder, private router: Router, private route: ActivatedRoute) {
 
@@ -39,10 +41,10 @@ export class TestFormComponent implements OnInit {
       IncludeAirports: [],
       IncludeAirlines: [],
       IncludeFusionRequestTypes: [],
-      FromDate: [],
-      ToDate: []
+      DateFrom: [],
+      DateTo: []
     }, {
-      validator: [fromDateOlderThanToDateValidator]
+      validator: [dateFromOlderThanDateToValidator]
     });
   }
 
@@ -84,8 +86,8 @@ export class TestFormComponent implements OnInit {
       this.newTestForm.controls['TestName'].setValue(data['TestName'])
       this.newTestForm.controls['TestDescription'].setValue(data['TestDescription'])
       this.newTestForm.controls['TestCreator'].setValue(data['TestCreator'])
-      this.newTestForm.controls['FromDate'].setValue(data['FromDate'])
-      this.newTestForm.controls['ToDate'].setValue(data['ToDate'])
+      this.newTestForm.controls['DateFrom'].setValue(data['DateFrom'])
+      this.newTestForm.controls['DateTo'].setValue(data['DateTo'])
 
       let auxAirports: string[] = []
       for (let i = 1; i < this.airports.length; i++) {
@@ -123,7 +125,7 @@ export class TestFormComponent implements OnInit {
       }
       this.newTestForm.controls['IncludeFusionRequestTypes'].setValue(auxRequestTypes)
     }
-    else{
+    else {
       this.newTestForm.controls['TestDescription'].setValue('')
       this.newTestForm.controls['TestCreator'].setValue('')
     }
@@ -177,19 +179,19 @@ export class TestFormComponent implements OnInit {
     }
     else {
       this.errorMessage = "The data is invalid"
-     console.log( this.newTestForm.errors)
+      console.log(this.newTestForm.errors)
     };
   }
-  
-setControlsAsTouched(){
-  Object.keys(this.newTestForm.controls).forEach(field => { 
-    const control = this.newTestForm.get(field);           
-    control.markAsTouched({ onlySelf: true });   
-  });
-}
 
-  displayFieldCss(field: string) {    
-    let control =this.newTestForm.get(field);
+  setControlsAsTouched() {
+    Object.keys(this.newTestForm.controls).forEach(field => {
+      const control = this.newTestForm.get(field);
+      control.markAsTouched({ onlySelf: true });
+    });
+  }
+
+  displayFieldCss(field: string) {
+    let control = this.newTestForm.get(field);
     return {
       'is-invalid': !control.valid && control.touched
     };
@@ -209,13 +211,35 @@ setControlsAsTouched(){
     this.router.navigate(['/home']);
   }
 
-}
-function fromDateOlderThanToDateValidator(group: FormGroup): ValidationErrors | null {
-  const fromDate = group.controls['FromDate'].value;
-  const toDate = group.controls['ToDate'].value;
+  applyFilter(control) {
+    console.log(control)
+    switch (control.id) {
+      case "dateFrom":
+        console.log(control)
+        let dateFrom = new Date(control.value)
+        if (dateFrom.toString() == 'Invalid Date')
+          this.dateFromIsValid = false
+        else
+          this.dateFromIsValid = true
+        break
+      case "dateTo":
+        let dateTo = new Date(control.value)
+        if (dateTo.toString() == 'Invalid Date')
+          this.dateToIsValid = false
+        else
+          this.dateToIsValid = true
+        break
+    }
+  }
 
-  if (fromDate && toDate) {
-    return fromDate <= toDate ? null : { checkFromDateIsOlderThanToDate: true };
+
+}
+function dateFromOlderThanDateToValidator(group: FormGroup): ValidationErrors | null {
+  const dateFrom = group.controls['DateFrom'].value;
+  const dateTo = group.controls['DateTo'].value;
+
+  if (dateFrom && dateTo) {
+    return dateFrom <= dateTo ? null : { checkDateFromIsOlderThanDateTo: true };
   } else {
     return null;
   }

@@ -30,7 +30,12 @@ export class TestResultsGridComponent implements OnInit, OnChanges {
   }
   loadGrid() {
     this.selectedResult = null
-    this.results$ = this.dbService.getTestResults(this.TestId, this.pageSize, this.currentPage, this.ExcludeOKrecords)
+    let args: any = {}
+    args.testId = this.TestId
+    args['page-size'] = this.pageSize
+    args.page = this.currentPage
+    args['exclude-ok-results'] = this.ExcludeOKrecords
+    this.results$ = this.dbService.getTestResults(args)
   }
 
   ngOnChanges() {

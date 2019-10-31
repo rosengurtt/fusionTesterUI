@@ -33,6 +33,8 @@ export class FusionRequestsGridComponent implements OnInit {
   FusionRequestId: string
   beginningOfTime: string = "2019-01-01 12:00:00.00"
   endOfTime: string = "2030-01-01 12:00:00.00"
+  dateFromIsValid: boolean = true
+  dateToIsValid: boolean = true
 
   columns: string[] = ["FusionRequestId", "RequestType", "Airline", "Airport", "PNR",
     "RequestTime", "FusionRequestXml", "FusionResponseXml"]
@@ -83,12 +85,30 @@ export class FusionRequestsGridComponent implements OnInit {
       case "PNR":
         this.selectedPNR = control.value
         break
-      case "dateFrom":
-        this.selectedDateFrom = control.value
-        break
-      case "dateTo":
-        this.selectedDateTo = control.value
-        break
+        case "dateFrom":
+            let dateFrom =  new  Date(control.value)       
+            if (dateFrom.toString() == 'Invalid Date'){
+               this.dateFromIsValid = false
+              return
+            }
+            else {
+              if (control.value.length < 10) return
+              this.selectedDateFrom = dateFrom.toISOString()
+              this.dateFromIsValid = true
+            }
+            break
+          case "dateTo":
+              let dateTo =  new  Date(control.value)       
+              if (dateTo.toString() == 'Invalid Date'){
+                this.dateToIsValid = false
+                return
+              } 
+              else {
+                if (control.value.length < 10) return
+                this.selectedDateTo = dateTo.toISOString()
+                this.dateToIsValid = true            
+              }
+            break
     }
     this.loadGrid() 
   }
@@ -105,11 +125,10 @@ export class FusionRequestsGridComponent implements OnInit {
       args.airline = new Array(this.selectedAirlines).join()
     if (this.selectedPNR && this.selectedPNR.length > 0 )
       args.pnr = this.selectedPNR
-    if (this.selectedDateFrom && this.selectedDateFrom != this.beginningOfTime ){
-      args['date-from'] = (new Date(this.selectedDateFrom)).toISOString()
-    }
+    if (this.selectedDateFrom && this.selectedDateFrom != this.beginningOfTime )
+      args['date-from'] = this.selectedDateFrom
     if (this.selectedDateTo && this.selectedDateTo != this.endOfTime )
-      args['date-to'] = (new Date(this.selectedDateTo)).toISOString()
+      args['date-to'] = this.selectedDateTo
 
     this.dbService.getFusionRequestsStatistics(args)
       .subscribe(data => {
