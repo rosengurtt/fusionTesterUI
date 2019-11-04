@@ -1,4 +1,10 @@
 {
+    "/api/*":{
+        "target": "http://localhost:60001",
+        "secure": false,
+        "changeOrigin": true  ,
+        "timeout": 3600000
+    },
     "/fusiontester/": {
         "target": "http://localhost:8093",
         "secure": false,

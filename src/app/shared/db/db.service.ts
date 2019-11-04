@@ -13,15 +13,17 @@ import { FusionRequest } from '../fusion.request';
 })
 export class DbService {
 
-  private baseUrl = '/fusiontester'
-  private testsUrl = this.baseUrl + '/tests'
-  private testsStatisticsUrl = this.baseUrl + '/tests/statistics'
-  private airportsUrl = this.baseUrl + '/airports'
-  private airlinesUrl = this.baseUrl + '/airlines'
-  private fusionRequestTypesUrl = this.baseUrl + '/fusion-request-types'
-  private testExecutionUrl = this.baseUrl + '/execution'
-  private fusionRequestsUrl = this.baseUrl + '/fusion-requests'
-  private fusionRequestsStatisticsUrl = this.baseUrl + '/fusion-requests/statistics'
+  private fusionTesterBaseUrl = '/fusiontester'
+  private testsUrl = this.fusionTesterBaseUrl + '/tests'
+  private testsStatisticsUrl = this.fusionTesterBaseUrl + '/tests/statistics'
+  private airportsUrl = this.fusionTesterBaseUrl + '/airports'
+  private airlinesUrl = this.fusionTesterBaseUrl + '/airlines'
+  private fusionRequestTypesUrl = this.fusionTesterBaseUrl + '/fusion-request-types'
+  private testExecutionUrl = this.fusionTesterBaseUrl + '/execution'
+  private fusionRequestsUrl = this.fusionTesterBaseUrl + '/fusion-requests'
+  private fusionRequestsStatisticsUrl = this.fusionTesterBaseUrl + '/fusion-requests/statistics'
+  private fusionTesterMiscBaseUrl =  '/api'
+  private fileUpload = this.fusionTesterMiscBaseUrl + '/upload'
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -46,7 +48,7 @@ export class DbService {
   public getTestResults(args: any): Observable<TestResult[]> {
     let params = new HttpParams({ fromObject: args });
 
-    return timer(0, 1000000)
+    return timer(0, 10000)
       .pipe(
         flatMap(() => this.http.get<TestResult[]>(this.testsUrl + '/' + args.testId + '/results', { params }))
       )
@@ -102,5 +104,16 @@ export class DbService {
 
   public getFusionRequestExecute(fusionRequestId: number): Observable<any> {
     return this.http.get<any>(this.fusionRequestsUrl + '/' + fusionRequestId );
+  }
+
+  public postUploadFiles(file1, file2){
+    const formData: FormData = new FormData();
+    formData.append("FusionRequests", file1, "FusionRequests")
+    formData.append("DCSrequests", file2, "DCSrequests")
+    return this.http.post(this.fileUpload, formData)
+  }
+
+  public getUploadStatus(){
+    return timer(0, 10000).pipe(flatMap(() => this.http.get(this.fileUpload)))
   }
 }

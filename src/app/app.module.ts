@@ -14,6 +14,7 @@ import { TestResultsGridComponent } from './home/test-results-grid/test-results-
 import { ResultDetailsComponent } from './home/result-details/result-details.component';
 import { FileCompareComponent } from './shared/file-compare/file-compare.component';
 import { FusionRequestsGridComponent } from './home/fusion-requests-grid/fusion-requests-grid.component';
+import { FileUploadComponent } from './home/file-upload/file-upload.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: TestsGridComponent },
@@ -30,7 +31,8 @@ const appRoutes: Routes = [
     TestResultsGridComponent,
     ResultDetailsComponent,
     FileCompareComponent,
-    FusionRequestsGridComponent
+    FusionRequestsGridComponent,
+    FileUploadComponent
   ],
   imports: [
     BrowserModule,

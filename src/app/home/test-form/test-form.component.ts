@@ -1,10 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef, OnChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DbService } from 'src/app/shared/db/db.service';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
-  FormGroupDirective,
   ValidationErrors,
   Validators
 } from '@angular/forms';

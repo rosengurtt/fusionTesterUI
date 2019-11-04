@@ -1,0 +1,26 @@
+<div class="container">
+        <h1>Upload test data</h1>
+        <form  [formGroup]="fileUploadForm">
+            <div class="form-group">
+                <label for="Fusion Requests File">Name</label>
+                <div>
+                    <input type="file" class="form-control has-error" id="FusionRequests" formControlName="FusionRequests" required 
+                    (change)="setFiles($event)">
+                </div>
+            </div>
+            <div class="form-group">
+                    <label for="DCS Requests File">Name</label>
+                    <div>
+                        <input type="file" class="form-control has-error" id="DCSrequests" formControlName="DCSrequests" required
+                        (change)="setFiles($event)" >
+                    </div>
+                </div>
+
+                
+        <button type="submit" class="btn btn-primary m-2" (click)="submitFiles()" >Submit</button>
+        <button type="button" class="btn btn-primary m-2" (click)="cancel()">Cancel</button>
+
+    </form>
+    <h3 class="text-danger">{{uploadProgress}}</h3><img *ngIf="showHourGlassIcon()" src="assets/img/hourglass.gif">
+</div>
+    
